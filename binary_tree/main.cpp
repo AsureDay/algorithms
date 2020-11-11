@@ -6,6 +6,6 @@
 int main(int argc, char** argv) {
 
 	testTime(100000,1000,100);
-	
-	return 0;
+	int result = Catch::Session().run(argc, argv);
+    return result;
 }
