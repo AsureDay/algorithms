@@ -28,14 +28,17 @@ void testTime(int size, int min, int max)
 	t2 = high_resolution_clock::now();
 	auto standartsortTime = duration<double>(t2 - t1).count();
 
-	cout << "my sort time" << mysortTime;
+	cout << "\nmy sort time" << mysortTime;
 	cout << "\nstandart sort itme" << standartsortTime<<endl;
 
 }
 
 
 int main(int argc, char **argv) {
-	testTime(100000, 500, 1000);
+	for(int i = 3;i < 7;i++){
+		cout << "i = "<<i<<std::endl;
+		testTime(pow(10,i), 500, 1000);
+	}
 	int result = Catch::Session().run(argc, argv);
-    return result;
+   	return result;
 }
