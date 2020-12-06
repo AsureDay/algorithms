@@ -1,6 +1,63 @@
 #include <iostream>
 #include <chrono>
+#include <vector>
 using namespace std;
+
+class LinMatrix
+{
+public:
+	vector<int> data;
+	int n;
+	int& at(int i,int j)
+	{
+		return data.at(i*n + j);
+	}
+	LinMatrix(int n):n(n)
+	{
+		data = vector<int>(n*n);
+		for(int i = 0;i < n;i++)
+		{
+			for(int j = 0; j <n;j++)
+			{
+				this->at(i, j) = rand() % 1000;
+			}
+		}
+	}
+	~LinMatrix()
+	{
+		data.clear();
+	}
+	void show()
+	{
+		for(int i = 0; i < n;i++)
+		{
+			for(int j = 0;j < n;j++)
+			{
+				cout << this->at(i, j) << "\t";
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+};
+
+void multyply(LinMatrix A,LinMatrix B,LinMatrix& C)
+{
+	int n = A.n;
+
+	for(int i = 0; i < n;i++)
+	{
+		for(int j = 0;j < n;j++)
+		{
+			int resij = 0;
+			for(int k = 0;k < n;k++)
+			{
+				resij += A.at(i, k) * B.at(k, j);
+			}
+			C.at(i, j) = resij;
+		}
+	}
+}
 
 int** classicMultyNxN(int** A,int** B,int n)
 {
@@ -95,33 +152,27 @@ void deleteMatrix(int** A,int n)
 }
 void test_time(int n)
 {
-	int** A = createRandMatrix(n);
-	int** B = createRandMatrix(n);
-	//standart multy
-	auto t1 = chrono::high_resolution_clock::now();
-	classicMultyNxN(A, B, n);
-	auto t2 = chrono::high_resolution_clock::now();
-	auto standartTime = chrono::duration<double>(t2 - t1).count();
-
-
-	//better multy
 	
-	transpose(B, n);
-	t1 = chrono::high_resolution_clock::now();
-	fasterMultyNxN(A, B, n);
-	t2 = chrono::high_resolution_clock::now();
+	//better multy
+	LinMatrix A(n);
+	LinMatrix B(n);
+	LinMatrix C(n);
+	auto t1 = chrono::high_resolution_clock::now();
+	multyply(A, B, C);
+	auto t2 = chrono::high_resolution_clock::now();
 	auto betterTime = chrono::duration<double>(t2 - t1).count();
 	cout << "n = " << n<<endl;
-	cout << "standart mult time = \t" << standartTime << endl;
+	//cout << "standart mult time = \t" << standartTime << endl;
 	cout << "better mult time = \t" << betterTime << endl;
-	deleteMatrix(A,n);
-	deleteMatrix(B, n);
 }
+
+
+
 int main()
 {
-	for(int i = 1;i < 20;i++)
+	for(int i = 1;i < 16;i++)
 	{
-		test_time(i * 100);
+		test_time(100*i);
 	}
 	return 0;
 }
