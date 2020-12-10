@@ -1,5 +1,5 @@
 #include "binary_tree.h"
-
+using namespace std;
 // A node of a binary tree.
 struct TreeNode {
 	int elem;
@@ -100,4 +100,17 @@ bool Set::find(int elem) const {
 
 int Set::size() const {
     return treeSize(root);    
+}
+ void Set::print_childs(TreeNode* parent,int level){
+	 if(parent)
+    {
+        print_childs(parent->left,level + 1);
+        for(int i = 0;i< level;i++) cout<<"   ";
+        cout << parent->elem << endl;
+        print_childs(parent->right,level + 1);
+    }
+ }
+void Set::print(){
+	TreeNode* parent = this->root;
+	print_childs(parent,0);
 }
