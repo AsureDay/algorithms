@@ -1,17 +1,8 @@
 #include "binary_tree.h"
-using namespace std;
-// A node of a binary tree.
-struct TreeNode {
-	int elem;
-	TreeNode *left = nullptr;
-	TreeNode *right = nullptr;
 
-	TreeNode(int elem = 0, TreeNode *left = nullptr, TreeNode *right = nullptr) :
-		elem(elem), left(left), right(right) {			
-	}
-};
 
-int treeSize(const TreeNode *node) {
+
+int treeSize(const TreeNode* node) {
 	// Get size of the tree recursively.
 	if (!node) {
 		return 0;
@@ -19,7 +10,7 @@ int treeSize(const TreeNode *node) {
 	return 1 + treeSize(node->left) + treeSize(node->right);
 }
 
-void treeDelete(TreeNode *node) {
+void treeDelete(TreeNode* node) {
 	// Delete the tree recursively.
 	if (!node) {
 		return;
@@ -29,27 +20,35 @@ void treeDelete(TreeNode *node) {
 	delete node;
 }
 
-Set::Set() {    
+Set::Set() {
 }
 
-Set::~Set() {    
+Set::~Set() {
 	// Destroy the tree.
-    treeDelete(root);
+	treeDelete(root);
+}
+
+void Set::print_list(const list<TreeNode*>& somelist)
+{
+	for (auto i : somelist)
+	{
+		cout << i->elem << '\t';
+	}
 }
 
 void Set::insert(int elem) {
-   
+
 	if (!this->root) {
 		this->root = new TreeNode(elem);
 		return;
 	}
 	auto node = new TreeNode(elem);
-	TreeNode *parent = this->root;
-	while(1)
+	TreeNode* parent = this->root;
+	while (1)
 	{
-		if(parent->elem == elem) return;
-		if (parent->elem < elem ) {
-			if(parent->right)
+		if (parent->elem == elem) return;
+		if (parent->elem < elem) {
+			if (parent->right)
 			{
 				parent = parent->right;
 				continue;
@@ -59,7 +58,7 @@ void Set::insert(int elem) {
 		}
 		else
 		{
-			if(parent->left)
+			if (parent->left)
 			{
 				parent = parent->left;
 				continue;
@@ -71,7 +70,7 @@ void Set::insert(int elem) {
 }
 // Return true if the element is in the set, false otherwise.
 bool Set::find(int elem) const {
- 
+
 	if (!this->root) return false;
 	TreeNode* parent = this->root;
 
@@ -99,18 +98,49 @@ bool Set::find(int elem) const {
 }
 
 int Set::size() const {
-    return treeSize(root);    
+	return treeSize(root);
 }
- void Set::print_childs(TreeNode* parent,int level){
-	 if(parent)
-    {
-        print_childs(parent->left,level + 1);
-        for(int i = 0;i< level;i++) cout<<"   ";
-        cout << parent->elem << endl;
-        print_childs(parent->right,level + 1);
-    }
- }
-void Set::print(){
-	TreeNode* parent = this->root;
-	print_childs(parent,0);
+
+int Set::get_max_height()
+{
+	return get_max_height(this->root);
+}
+int Set::get_max_height(TreeNode* root)
+{
+	if (!root) return 1;
+	else
+	{
+		return 1 + fmax(get_max_height(root->right), get_max_height(root->left));
+	}
+}
+
+
+list<TreeNode*>* Set::get_list_childs(TreeNode* parent,int level)
+{
+	if (!parent) return new list<TreeNode*>;
+	
+	if(level == 0)
+	{
+		list<TreeNode*>* result = new list<TreeNode*>;
+		result->push_back(parent);
+		return result;
+	}
+	else
+	{
+		auto l1 = get_list_childs(parent->left, level - 1);
+		auto l2 = get_list_childs(parent->right, level - 1);
+		l1->splice(l1->end(), *l2);
+		return l1;
+	}
+}
+
+
+void Set::print() {
+	int maxheight = this->get_max_height();
+	for(int i =0;i < maxheight;i++)
+	{
+		auto k = get_list_childs(this->root, i);
+		print_list(*k);
+		cout << endl;
+	}
 }

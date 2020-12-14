@@ -20,8 +20,6 @@ public:
     Set();
     ~Set();
 
-    
-
     ///printing tree left to right from
     void print();
     /// Insert the element into the set.
