@@ -107,7 +107,7 @@ int Set::get_max_height()
 }
 int Set::get_max_height(TreeNode* root)
 {
-	if (!root) return 1;
+	if (!root) return 0;
 	else
 	{
 		return 1 + fmax(get_max_height(root->right), get_max_height(root->left));
